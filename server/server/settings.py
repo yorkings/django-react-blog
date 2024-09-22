@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'dab.sqlite3',
     }
 }
 
@@ -162,3 +162,88 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOW_ORIGIN=True
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Django-blog",
+    "site_header": "react-blog",
+    "site_brand": "Modern Marketplace ",
+    # "site_icon": "images/favicon.ico",
+    # "site_logo": "images/logos/logo.jpg",
+    "welcome_sign": "Welcome To Desphixs",
+    "copyright": "yorkings",
+
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "home", "permissions": ["auth.view_user"]},
+        {"model": "auth.User"},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "order_with_respect_to": [
+        "api",
+        "api.Post",
+        "api.Category",
+        "api.Comment",
+        "api.Bookmark",
+        "api.Notification",
+    ],
+    "icons": {
+        "admin.LogEntry": "fas fa-file",
+
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+
+        "api.User": "fas fa-user",
+        "api.Profile":"fas fa-address-card",
+        "api.Post":"fas fa-th",
+        "api.Category":"fas fa-tag",
+        "api.Comment":"fas fa-envelope",
+        "api.Notification":"fas fa-bell",
+        "api.Bookmark":"fas fa-heart",
+
+        
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-arrow-circle-right",
+    "related_modal_active": False,
+    
+    "custom_js": None,
+    "show_ui_builder": True,
+    
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "auth.user": "collapsible",
+        "auth.group": "vertical_tabs",
+    },
+}
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "darkly",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
