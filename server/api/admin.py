@@ -3,3 +3,7 @@ from .models import *
 # Register your models here.
 admin.site.register(UserProfile)
 admin.site.register(Category)
+admin.site.register(Post)
+admin.site.register(Notification)
+admin.site.register(Bookmark)
+admin.site.register(comment)

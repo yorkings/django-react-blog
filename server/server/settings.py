@@ -171,7 +171,7 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Modern Marketplace ",
     # "site_icon": "images/favicon.ico",
     # "site_logo": "images/logos/logo.jpg",
-    "welcome_sign": "Welcome To Desphixs",
+    "welcome_sign": "Welcome To blog app",
     "copyright": "yorkings",
 
     "topmenu_links": [
