@@ -14,5 +14,13 @@ urlpatterns=[
     path('post/detail/<slug>/',PostDetailAPIView.as_view(),name="post_detail"),
     path('post/like_post/',LikePostAPIView.as_view(),name='likes'),
     path('post/comment/',PostCommentAPIView.as_view(),name="comment"),
-    path('post/bookmark/',BookmarkPostAPIView.as_view(),name="bookmark")
+    path('post/bookmark/',BookmarkPostAPIView.as_view(),name="bookmark"),
+    
+
+     path('author/dashboard/stats/<user_id>/', DashboardStats.as_view()),
+    path('author/dashboard/post-list/<user_id>/', DashboardPostLists.as_view()),
+    path('author/dashboard/comment-list/', DashboardCommentLists.as_view()),
+    path('author/dashboard/noti-list/<user_id>/', DashboardNotificationLists.as_view()),
+    path('author/dashboard/noti-mark-seen/', DashboardNotificationSeen.as_view()),
+    path('author/dashboard/reply-comment/',DashboardReplyComment.as_view()) 
 ]

@@ -103,6 +103,6 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 class AuthorSerializer(serializers.Serializer):
     views=serializers.IntegerField(default=0)
-    post=serializers.IntegerField(default=0)
+    posts=serializers.IntegerField(default=0)
     likes=serializers.IntegerField(default=0)
     bookmarks=serializers.IntegerField(default=0)

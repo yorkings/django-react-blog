@@ -166,7 +166,7 @@ class DashboardStats(generics.ListAPIView):
         views=Post.objects.filter(user=user).aggregate(view = Sum('view'))['view']
         posts=Post.objects.filter(user=user).count()
         likes=Post.objects.filter(user=user).aggregate(total_likes=Sum('likes'))['total_likes']
-        bookmarks=Bookmark.objects.filter(post__user=user.username).count()
+        bookmarks=Bookmark.objects.filter(post__user=user).count()
 
         return [{
             'views':views,
@@ -174,3 +174,49 @@ class DashboardStats(generics.ListAPIView):
             "likes":likes,
             "bookmarks":bookmarks
         }]
+    def list(self, request, *args, **kwargs):
+        queryset=self.get_queryset()
+        serializer=self.get_serializer(queryset,many=True)
+        return Response(serializer.data)
+
+class DashboardPostLists(generics.ListAPIView):
+    serializer_class=PostSerializer
+    permission_classes=[AllowAny]
+    def get_queryset(self):
+        user_id=self.kwargs['user_id']
+        user=User.objects.get(id=user_id)
+        return Post.objects.filter(user=user).order_by('id')   
+    
+class DashboardCommentLists(generics.ListAPIView):
+    serializer_class=CommentSerializer
+    permission_classes=[AllowAny]
+    def get_queryset(self):
+        user_id=self.kwargs['user_id']
+        user=User.objects.get(id=user_id)
+        
+        return Comment.objects.filter(post__user=user)
+    
+class DashboardNotificationLists(generics.ListAPIView):
+    serializer_class=NotificationSerializer
+    permission_classes=[AllowAny]
+    def get_queryset(self):
+        user_id=self.kwargs['user_id']
+        user=User.objects.get(id=user_id)
+        return Notification.objects.get(user=user,seen=False)
+    
+class DashboardNotificationSeen(APIView):
+    def post(self,request):
+        noti_id=request.data["noti_id"]
+        noti=Notification.objects.get(id=noti_id)
+        noti.seen=True
+        noti.save()
+        return Response({'message':"marked as read"},status=status.HTTP_200_OK)    
+    
+class DashboardReplyComment(APIView):
+    def post(self,request):
+      comm_id=request.data["comm_id"]
+      reply=request.data['reply']
+      comm=Comment.objects.get(id=comm_id)
+      comm.reply=reply
+      comm.save()
+      return Response({'message':"reply sucessful"},status=status.HTTP_200_OK) 
