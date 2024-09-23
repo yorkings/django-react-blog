@@ -1,24 +1,43 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import Token
 from .models import *
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth.password_validation import validate_password
+
 
 class MyTokenpairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
         token['username']=user.username
+        token['email']=user.email
         return token
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     first_name=serializers.CharField(max_length=10)
     last_name=serializers.CharField(max_length=10)
+    email= serializers.EmailField()
+    password1 = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
     class Meta:
         model=User
         fields=["id","username","first_name","last_name","email","password1",'password2']
-    def create(self,validate_data):
-        user=User.objects.create(**validate_data)
+    def validate(self, data):
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError("Passwords must match.")
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return data    
+    def create(self,validated_data):
+        user=User.objects.create(
+            username=validated_data['username'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            email=validated_data['email']
+        )
+        user.set_password(validated_data['password1'])  # Hash the password
+        user.save()
         return user          
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -48,7 +67,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model=comment
+        model=Comment
         fields="__all__"   
     def __init__(self,*args, **kwargs):
         super(CommentSerializer,self).__init__(*args, **kwargs)

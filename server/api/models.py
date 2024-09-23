@@ -74,10 +74,10 @@ class Post(models.Model):
             self.slug = slugify(self.title)+ "-"+shortuuid.uuid()[:2]
         super(Post,self).save(*args,**kwargs)  
 
-class comment(models.Model):
+class Comment(models.Model):
     post=models.ForeignKey(Post,on_delete=models.CASCADE)
-    name=models.ForeignKey(User,on_delete=models.CASCADE)
-    title=models.CharField(max_length=100)
+    name=models.CharField(max_length=100)
+    email=models.CharField(max_length=100)
     content=models.TextField(null=True,blank=True)
     reply=models.TextField(null=True,blank=True)
     date=models.DateTimeField(auto_now_add=True)
