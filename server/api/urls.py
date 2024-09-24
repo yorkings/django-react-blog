@@ -16,11 +16,13 @@ urlpatterns=[
     path('post/comment/',PostCommentAPIView.as_view(),name="comment"),
     path('post/bookmark/',BookmarkPostAPIView.as_view(),name="bookmark"),
     
-
-     path('author/dashboard/stats/<user_id>/', DashboardStats.as_view()),
+    #dashboard
+    path('author/dashboard/stats/<user_id>/', DashboardStats.as_view()),
     path('author/dashboard/post-list/<user_id>/', DashboardPostLists.as_view()),
     path('author/dashboard/comment-list/', DashboardCommentLists.as_view()),
     path('author/dashboard/noti-list/<user_id>/', DashboardNotificationLists.as_view()),
     path('author/dashboard/noti-mark-seen/', DashboardNotificationSeen.as_view()),
-    path('author/dashboard/reply-comment/',DashboardReplyComment.as_view()) 
+    path('author/dashboard/reply-comment/',DashboardReplyComment.as_view()),
+    path('author/dashboard/post-create/',DashboardCreatePostAPIView.as_view()),
+    path('author/dashboard/post-detail/<user_id>/<post_id>/',DashboardEditPostAPIview.as_view()),
 ]

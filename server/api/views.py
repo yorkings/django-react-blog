@@ -220,3 +220,55 @@ class DashboardReplyComment(APIView):
       comm.reply=reply
       comm.save()
       return Response({'message':"reply sucessful"},status=status.HTTP_200_OK) 
+    
+class DashboardCreatePostAPIView(generics.CreateAPIView):
+    serializer_class=PostSerializer
+    permission_classes=[AllowAny]
+    def create(self, request, *args, **kwargs):
+        user_id=request.data.get('user_id')
+        title=request.data.get('title' )
+        image=request.data.get('image' )
+        tags=request.data.get('tags'  )
+        status=request.data.get('status' )
+        content =request.data.get('content')
+        category_id=request.data.get('category_id')
+        user=User.objects.get(id=user_id)
+        category=Category.objects.get(id=category_id)
+        Post.objects.create(user=user,
+                            category=category,
+                            status=status,
+                            content=content,
+                            image=image,
+                            title=title,
+                            tags=tags
+                            )
+        return Response({"message":"post created"}, status=status.HTTP_201_CREATED)
+
+
+class DashboardEditPostAPIview(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class=PostSerializer
+    permission_classes=[AllowAny]
+    def get_object(self):
+        user_id=self.kwargs["user_id"]
+        post_id=self.kwargs["post_id"]
+        user=User.objects.get(id=user_id)
+        return Post.objects.get(user=user,id=post_id)
+    def update(self, request, *args, **kwargs):
+        post_instance=self.get_object()
+        title=request.data.get('title' )
+        image=request.data.get('image' )
+        tags=request.data.get('tags'  )
+        status=request.data.get('status' )
+        content =request.data.get('content')
+        category_id=request.data.get('category_id')
+        category=Category.objects.get(id=category_id)
+        post_instance.title=title
+        if image!='undefined':
+            post_instance.image=image
+        post_instance.category=category
+        post_instance.tags=tags
+        post_instance.status=status
+        post_instance.content=content    
+        post_instance.save()
+        return Response({"message":"post updated"}, status=status.HTTP_201_CREATED)
+
