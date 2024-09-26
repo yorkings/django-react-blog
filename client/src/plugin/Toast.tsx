@@ -1,5 +1,5 @@
 import { ToastContainer } from "react-toastify"
-
+import "react-toastify/ReactToastify.css"
 
 const Toast= ()=>{
     return(
