@@ -23,7 +23,8 @@ const Login = () => {
        navigate("/");
        toast.success("Sign in successfully!");
     } catch (error) {
-        toast.error("invalid credentials")
+        toast.error("invalid credentials ")
+        console.log(error)
     }
     finally{
       setloading(false)
