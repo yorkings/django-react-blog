@@ -21,8 +21,9 @@ export const refreshToken = async () => {
             toast.error("Failed to refresh access token.");
             return null;
         }
-    } catch (error) {
-        toast.error("Error refreshing access token: " + (error.response?.data?.detail || error.message));
+    } catch (error){
+        console.log(error.message)
+        localStorage.clear()
         return null; // Return null on error
     }
 }    

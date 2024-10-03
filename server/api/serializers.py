@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import *
-from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
 
@@ -9,8 +8,10 @@ class MyTokenpairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['username']=user.username
-        token['email']=user.email
+        token['username'] = user.username
+        token['email'] = user.email
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
         return token
 
 
@@ -28,6 +29,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Passwords must match.")
         if User.objects.filter(email=data['email']).exists():
             raise serializers.ValidationError("A user with this email already exists.")
+        if User.objects.filter(username=data['username']):
+            raise serializers.ValidationError("username taken")
+
         return data    
     def create(self,validated_data):
         user=User.objects.create(

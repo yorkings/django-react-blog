@@ -1,6 +1,6 @@
 
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../lib/constants"
 import { toast } from "react-toastify"
 import { api } from "../../lib/Api"
@@ -10,17 +10,21 @@ import { api } from "../../lib/Api"
 const Login = () => {
   const [loading,setloading]=useState(false)
   const navigate=useNavigate()
+  const location=useLocation()
   const handleLogin=async(e)=>{
     setloading(true)
     e.preventDefault()
     const data=new FormData(e.target)
     const {username,password}=Object.fromEntries(data)
+    console.log(location.state); 
 
     try {
-       const res = await api.post('user/token/',{username,password})
-       localStorage.setItem(ACCESS_TOKEN,res.data.access)
-       localStorage.setItem(REFRESH_TOKEN,res.data.refresh)
-       navigate("/");
+       const res = await api.post('user/token/',{username,password});
+       localStorage.setItem(ACCESS_TOKEN,res.data.access);
+       localStorage.setItem(REFRESH_TOKEN,res.data.refresh);
+       const whereTo=location.state?.whereTo?.pathname || '/';
+       console.log(whereTo); 
+       navigate(whereTo);
        toast.success("Sign in successfully!");
     } catch (error) {
         toast.error("invalid credentials ")

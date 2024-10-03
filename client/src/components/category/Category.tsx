@@ -1,42 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { api } from '../lib/Api';
-import { FaArrowRight, FaEye, FaUser, FaArrowLeft, FaCalendar } from 'react-icons/fa';
-import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react'
+import { apiAuth } from '../../lib/Api'
+import { useNavigate, useParams } from 'react-router-dom'
+import { FaArrowLeft, FaCalendar, FaEye, FaUser ,FaArrowRight} from 'react-icons/fa'
+import moment from 'moment'
 
-const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [category, setCategory] = useState([]);
-  const itemsPerPage = 3;
-  const [currentPage, setCurrentPage] = useState(1);
-  const navigate =useNavigate()
+const Category = () => {
+  const [cats,setCat]=useState([])
+  const [post,setPosts]=useState([])
+  const {slug}=useParams()
+  const navigate=useNavigate()
+//   pagination
+  const [currentPage,setCurrentPage]=useState(1)
+  const itemsPerPage= 4
+  const indexOfLastItem= itemsPerPage *currentPage
+  const indexOfFirstItem=indexOfLastItem - itemsPerPage
+  const PostItems=post?.slice(indexOfFirstItem,indexOfLastItem)
+  const totalPages = Math.ceil(post.length / itemsPerPage);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const postItems = posts?.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(posts.length / itemsPerPage);
-
-  const handlePostDetails = (slug) => {
-    navigate(`/post/${slug}`)
-  };
- const handleCategory=(slug)=>{
-  navigate(`category/${slug}`)
- }
-  const fetchPosts = async () => {
-    try {
-      const res_post = await api.get('post/list');
-      const res_cat = await api.get('post/category/list/');
-      setPosts(res_post.data);
-      setCategory(res_cat.data);
-    } catch (error) {
-      toast.error(error.message);
+  const fetchCategories=useCallback(async()=>{
+    const res_cat = await apiAuth.get('post/category/list/')
+    const res_pos = await apiAuth.get(`post/category/post/${slug}`)
+    setCat(res_cat.data)
+    setPosts(res_pos.data)
+    } ,[slug]) 
+    const handleCategory=(slug)=>{
+        navigate(`category/${slug}`)
     }
-  };
+    const handlePostDetails = (slug) => {
+        navigate(`/post/${slug}`)
+    };
+  useEffect(()=>{
+    fetchCategories();
+  },[fetchCategories])
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -53,16 +49,15 @@ const Home = () => {
   const handlePageClick = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-   console.log(posts)
+
   return (
-    <div className="p-6 bg-slate-50">
-      {/* Category Section */}
-      <div className="mb-8 bg-[#f5f5f5] border-none rounded-md">
+    <div>
+       <div className="mb-8 bg-[#f5f5f5] border-none rounded-md">
         <div className="w-full flex justify-center my-4">
           <h1 className="text-3xl font-serif font-bold text-gray-800">Categories</h1>
         </div>
         <div className="flex gap-6 overflow-x-auto scrollbar-hide mb-3">
-          {category.map((cat) => (
+          {cats?.map((cat) => (
             <div
               className="min-w-[150px] bg-[#f1f1f1] rounded-md shadow-md overflow-hidden flex flex-col items-center transition-transform transform hover:scale-105 p-3 mb-5"
               key={cat.id} onClick={()=>handleCategory(cat.slug)}
@@ -78,14 +73,13 @@ const Home = () => {
           ))}
         </div>
       </div>
-
-      {/* Posts Grid */}
+      
       <div className="mb-4">
         <div className="w-full flex justify-center mb-4">
           <h1 className="text-3xl font-serif font-bold text-gray-800">Posts</h1>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 items-center">
-          {postItems?.map((post) => (
+          {PostItems?.map((post) => (
             <div
               className="bg-[#f5f5f5] shadow-lg rounded-md overflow-hidden transition-transform transform hover:scale-105"
               key={post.id}
@@ -116,8 +110,8 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-center">
+     {/* Pagination */}
+     <div className="flex items-center justify-center">
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
@@ -141,11 +135,12 @@ const Home = () => {
           disabled={currentPage === totalPages}
           className={`px-3 py-1 mx-1 bg-gray-300 rounded-md  flex items-center ${currentPage === totalPages && 'opacity-50 cursor-not-allowed'} `}
         >
-        <span>Next</span> <FaArrowRight />
+        <span>Next</span> <FaArrowRight/>
         </button>
       </div>
+
     </div>
-  );
-};
- 
-export default Home;
+  )
+}
+
+export default Category
